@@ -1,0 +1,28 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+import time
+
+driver = webdriver.Chrome()
+driver.maximize_window()
+
+for pages in range(1, 6):
+    driver.get(f"https://www.ikea.com/eg/en/search/?q=ceiling-lights&page={pages}")
+    time.sleep(2)
+
+    container = driver.find_elements(By.XPATH, '//div[contains(@class, "plp-mastercard")]')
+
+    for item in container:
+        try:
+            name = item.find_element(By.CLASS_NAME, "plp-price-module__product-name").text.strip()
+            if name:
+                print(name)
+            else:
+                print("Name element found, but text is empty")
+
+        except NoSuchElementException:
+            print("Name element not found in this product card:")
+            print(item.get_attribute("outerHTML"))
+
+input("Press Enter to close: ")
+driver.quit()
